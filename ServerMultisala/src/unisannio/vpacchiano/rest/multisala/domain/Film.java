@@ -8,6 +8,7 @@ public class Film {
 	private String regista;
 	private int annoUscita;
 	private String genere;
+	private int a;
 	
 	public Film(String codFilm, String nome, String regista, int annoUscita, String genere) {
 		this.codFilm = codFilm;
