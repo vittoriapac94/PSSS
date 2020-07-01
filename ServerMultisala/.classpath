@@ -8,7 +8,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/gson-2.3.1.jar"/>
 	<classpathentry kind="lib" path="libs/javax-crypto.jar"/>
-	<classpathentry kind="lib" path="libs/org.restlet.jar"/>
 	<classpathentry kind="lib" path="libs/mysql-connector-java-8.0.20.jar"/>
+	<classpathentry kind="lib" path="/Server/librerie/org.restlet-2.3.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
