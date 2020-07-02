@@ -19,20 +19,20 @@ public class GestoreCinema {
 	
 	public static void main(String [] args) throws SQLException, UtenteSconosciutoException, UtenteDuplicatoException, FilmSconosciutoException, FilmDuplicatoException, SalaSconosciutaException, SalaDuplicataException, ProgrammazioneSconosciutaException, ProgrammazioneDuplicataException, PrenotazioneSconosciutaException, PrenotazioneDuplicataException, PostiTerminatiException, ChiaveSconosciutaException{
 		GestoreCinema gest = new GestoreCinema();
-		Utente u = new Utente("Luigino", "Luigi", "Martire", "luigimartire@jj.it", "luigino17", "1994-01-24", true);
-		gest.addUtente(u);
-		gest.addUtente(new Utente("Lallalapalla", "Laura", "Mancini", "lallapallina@alice.it", "lalla44", "1988-08-05", false));
+		//Utente u = new Utente("Luigino", "Luigi", "Martire", "luigimartire@jj.it", "luigino17", "1994-01-24", true);
+		//gest.addUtente(u);
+		//gest.addUtente(new Utente("Lallalapalla", "Laura", "Mancini", "lallapallina@alice.it", "lalla44", "1988-08-05", false));
 		
 		//Utente utente = gest.getUtenteByChiave("56b211bf00faf47d1c3cb7f28104fc8c");
 		//System.out.println(utente);
-		Sala s = new Sala("Vittoria", 130);
-		gest.addSala(s);
+		//Sala s = new Sala("Vittoria", 130);
+		//gest.addSala(s);
 		
 		//Utente f= gest.getUtenteByUsername("Luigino");
 		//System.out.println(f+"\n");
 		
-		Film fi = new Film("AF021", "La promessa dell assassino", "Hatchak", 2007, "Thriller");
-		gest.addFilm(fi);
+		//Film fi = new Film("AF021", "La promessa dell assassino", "Hatchak", 2007, "Thriller");
+		//gest.addFilm(fi);
 		//gest.removeFilm("AF021");
 		
 		//Film[] ff = gest.getAllFilm();
@@ -40,14 +40,14 @@ public class GestoreCinema {
 		
 		//Film fil = gest.getFilm("AF021"); 
 		
-		Sala sa = new Sala("Calliope",521);
-		gest.addSala(sa);
+		//Sala sa = new Sala("Calliope",521);
+		//gest.addSala(sa);
 		//gest.removeSala("Calliope");
 		
 		
-		Programmazione p = new Programmazione ("PR01", "Vittoria", "AF021", "2015-12-01", "11:00", 1);
-		gest.addProgrammazione(p);
-		//gest.removeProgrammazione("PR03");
+		//Programmazione p = new Programmazione ("PR01", "Vittoria", "AF021", "2015-12-01", "11:00", 1);
+		//gest.addProgrammazione(p);
+		//gest.removeProgrammazione("PR01");
 		
 		//Programmazione[] prog = gest.getAllProgrammazioni();
 		//for (Programmazione pr:prog) System.out.println(pr+"\n");
@@ -55,8 +55,8 @@ public class GestoreCinema {
 		//Programmazione pr = gest.getProgrammazione("PR03");
 		//System.out.println(pr);
 		
-		Prenotazione pren = new Prenotazione ("PREN1", "Luigino", "PR01", 27);
-		gest.addPrenotazione(pren);
+		//Prenotazione pren = new Prenotazione ("PREN1", "Luigino", "PR01", 27);
+		//gest.addPrenotazione(pren);
 		//gest.removePrenotazione("PREN1");
 		
 		//Prenotazione[] pr = gest.getAllPrenotazioni();

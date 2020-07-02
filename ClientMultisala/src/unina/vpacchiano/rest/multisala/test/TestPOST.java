@@ -9,7 +9,12 @@ import org.restlet.resource.ResourceException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import unina.vpacchiano.rest.multisala.controllers.CinemaController;
 import unina.vpacchiano.rest.multisala.domain.Film;
+import unina.vpacchiano.rest.multisala.domain.Prenotazione;
+import unina.vpacchiano.rest.multisala.domain.Programmazione;
+import unina.vpacchiano.rest.multisala.domain.Sala;
+import unina.vpacchiano.rest.multisala.domain.Utente;
 
 
 public class TestPOST {
@@ -22,23 +27,31 @@ public class TestPOST {
 		String URI;
 		String json;
 		
-		// Cancel the archive file to test how state handling
+		CinemaController cc = new CinemaController();
+		String chiaveProva = "56b211bf00faf47d1c3cb7f28104fc8c";
 
-		// ADD A PERSON
-		URI = "http://localhost:8182/film/F02&56b211bf00faf47d1c3cb7f28104fc8c";    // use a wrong URI to test exit path
-		System.out.println("Testing add a film with URI: " + URI);
-		cr = new ClientResource(URI);
-		Film f = new Film("F02", "La carica dei 101", "Mio Zio", 1999, "Cartone animato");
-		json = cr.post(gson.toJson(f,Film.class)).getText();
-		status = cr.getStatus();
-		if (status.getCode() != 200) {
-			JsonObject o = gson.fromJson(json, JsonObject.class);
-			System.out.println(o.toString());
-			System.exit(status.getCode());
-		} else {
-			f = gson.fromJson(json, Film.class);		
-			System.out.println("E' stato aggiunto il film: " + f.toString());
-		}	
+		// Funzionante add utente REGISTRAZIONE
+		//Utente u = new Utente("Giovannina", "Giovanna", "De Matteo", "giovannella@gio.it", "giovannina99", "1999-01-11", false);
+		//cc.registraUtente(u);
+		
+		//Funzionante add FILM
+		//Film f = new Film("F01", "Titanic", "Cameron", 1999, "Drammatico");
+		//cc.addFilm(f, chiaveProva);
+		
+		//Funzionante add SALA
+		Sala s = new Sala("Andromeda",233);
+		cc.addSala(s, chiaveProva);
+		
+		//Funzionante add PROGRAMMAZIONE
+		Programmazione p = new Programmazione ("PR02", "Andromeda", "AF021", "2015-12-01", "12:00", 3);
+		cc.addProgrammazione(p, chiaveProva);
+		
+		//Funzionante add PRENOTAZIONE
+		Prenotazione pren = new Prenotazione ("PREN2", "Giovannina", "PR02", 21);
+		cc.addPrenotazione(pren, chiaveProva);
+		
+		
+		
 	}	
 
 }
