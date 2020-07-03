@@ -60,6 +60,23 @@ public class CinemaController {
 		}	
 	}
 	
+	public Utente getUtente(String chiave) throws ResourceException, IOException {
+		Utente utente;
+		
+		URI = localURL+"/users/"+chiave;
+		cr = new ClientResource(URI);
+		json = cr.get().getText();
+		status = cr.getStatus();
+		if (status.getCode() != 200) {
+			utente = null;
+			System.exit(status.getCode());
+		} else {
+			utente = gson.fromJson(json, Utente.class);	
+		}
+		return utente;
+	}
+		
+	
 	//METODI FILM
 	
 	public ArrayList<Film> getAllFilms() throws ResourceException, IOException {

@@ -53,7 +53,9 @@ public class Programmazione {
 
 	@Override
 	public String toString() {
-		return this.codProgrammazione+" Film: "+this.codFilm+" Sala: "+this.nomeSala+" "+this.data+" "+this.orario+" prenotati: "+this.postiPrenotati;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String dataStr = sdf.format(this.data);
+		return this.codProgrammazione+" Film: "+this.codFilm+" Sala: "+this.nomeSala+" "+dataStr+" "+this.orario;
 	}
 
 	@Override
