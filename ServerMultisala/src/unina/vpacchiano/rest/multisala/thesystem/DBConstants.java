@@ -28,7 +28,6 @@ public class DBConstants {
 													"`NOME` VARCHAR(50) NOT NULL,"+
 													"`REGISTA` VARCHAR(50) NOT NULL,"+
 													"`ANNOUSCITA` INT(11) NOT NULL,"+
-													"`GENERE` VARCHAR(50) NOT NULL,"+
 													"PRIMARY KEY (`COD_FILM`)"+
 													")";
 	
@@ -51,7 +50,6 @@ public class DBConstants {
 													 "`COGNOME` VARCHAR(50) NOT NULL,"+
 													 "`EMAIL` VARCHAR(50) NOT NULL,"+
 													 "`PASSWORD` VARCHAR(50) NOT NULL,"+
-													 "`NASCITA` DATE NOT NULL,"+
 													 "`ADMIN` BIT(1) NOT NULL,"+
 													 "PRIMARY KEY (`NOME_UTENTE`),"+
 													 "UNIQUE (`EMAIL`)"+

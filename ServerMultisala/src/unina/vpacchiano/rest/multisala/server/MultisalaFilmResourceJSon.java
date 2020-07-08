@@ -84,41 +84,6 @@ public class MultisalaFilmResourceJSon extends ServerResource {
 		
 		
 	}
-	
-	@Delete
-	public String deleteFilm(){
-		Gson gson = new Gson();
-		GestoreCinema gest = null;
-		Status status;
-		try{
-			gest = GestoreCinema.getGestoreCinema();
-			String chiavejson= (String)this.getAttribute("chiave");
-			Utente u = gest.getUtenteByChiave(chiavejson);
-			if(u.isAdmin()){
-				return gson.toJson(gest.removeFilm(this.getAttribute("nome")), Film.class);
-			}
-			else{
-				status = new Status(Constants.ECCEZIONE_PERMESSO_NEGATO,"� negato l'accesso","Accesso negato",null);
-				setStatus(status);
-				return gson.toJson(status, Status.class);
-			}
-		}catch (FilmSconosciutoException e) {
-			status = new Status(Constants.ECCEZIONE_FILM_INESISTENTE,"FilmNotFound","Il film non � stata trovato",null);
-			setStatus(status);
-			return gson.toJson(status, Status.class);
-		}catch (SQLException ex) {
-			status = new Status(Constants.ECCEZIONE_COLLEGAMENTO_DATABASE,"DatabaseError","Errore accesso al DataBase",null);
-			setStatus(status);
-			return gson.toJson(status, Status.class);
-		} catch (UtenteSconosciutoException e) {
-			status = new Status(Constants.ECCEZIONE_UTENTE_INESISTENTE,"UnknownUser","Utente non conosciuto",null);
-			setStatus(status);
-			return gson.toJson(status, Status.class);
-		} catch (ChiaveSconosciutaException e) {
-			status = new Status(Constants.ECCEZIONE_CHIAVE_INESISTENTE,"UnknownKey","Chiave sconosciuta",null);
-			setStatus(status);
-			return gson.toJson(status, Status.class);
-		}
-	}
+
 
 }

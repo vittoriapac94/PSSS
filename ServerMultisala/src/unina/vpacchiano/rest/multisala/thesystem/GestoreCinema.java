@@ -145,27 +145,6 @@ public class GestoreCinema {
 		return s;
 	}
 	
-	public synchronized Sala addSala(Sala s) throws SQLException, SalaSconosciutaException, SalaDuplicataException{
-		try{
-			getSala(s.getNome());
-			throw new SalaDuplicataException(s.getNome());
-		}
-		catch(SalaSconosciutaException ex){
-			Statement add = con.createStatement();
-			add.execute("INSERT INTO "+DBConstants.NAME_TABLE_SALE+" (NOME, CAPIENZA) VALUES ('"+
-							s.getNome()+"',"+s.getCapienza()+");");
-			return getSala(s.getNome());
-		}
-	}
-	
-	public synchronized Sala removeSala(String nome) throws SQLException, SalaSconosciutaException{
-		Sala tmp = getSala(nome);
-		Statement delete = con.createStatement();
-		delete.execute("DELETE FROM "+DBConstants.NAME_TABLE_SALE+" WHERE NOME='"+tmp.getNome()+"';");
-		return tmp;
-	}
-	
-	
 	//Metodi FILM
 	
 	public synchronized Film[] getAllFilm() throws SQLException{
@@ -173,7 +152,7 @@ public class GestoreCinema {
 		Statement query = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet result = query.executeQuery("SELECT * FROM "+DBConstants.NAME_TABLE_FILM);
 		while(result.next()){
-			Film tmp = new Film(result.getString("COD_FILM"), result.getString("NOME"), result.getString("REGISTA"), result.getInt("ANNOUSCITA"), result.getString("GENERE"));
+			Film tmp = new Film(result.getString("COD_FILM"), result.getString("NOME"), result.getString("REGISTA"), result.getInt("ANNOUSCITA"));
 			films.add(tmp);
 		}
 		Film[] tmpfilm = new Film[films.size()];
@@ -189,7 +168,7 @@ public class GestoreCinema {
 		ResultSet result = query.executeQuery("SELECT * FROM "+DBConstants.NAME_TABLE_FILM+" WHERE COD_FILM='"+codFilm+"'");
 		if(!result.first())
 			throw new FilmSconosciutoException(codFilm);
-		Film f = new Film(result.getString("COD_FILM"), result.getString("NOME"), result.getString("REGISTA"), result.getInt("ANNOUSCITA"), result.getString("GENERE"));
+		Film f = new Film(result.getString("COD_FILM"), result.getString("NOME"), result.getString("REGISTA"), result.getInt("ANNOUSCITA"));
 
 		return f;
 	}
@@ -202,17 +181,11 @@ public class GestoreCinema {
 		catch(FilmSconosciutoException ex){
 			Statement add = con.createStatement();
 			add.execute("INSERT INTO "+DBConstants.NAME_TABLE_FILM+" (COD_FILM, NOME, REGISTA, ANNOUSCITA, GENERE) VALUES ('"+
-							f.getCodFilm()+"','"+f.getNome()+"','"+f.getRegista()+"',"+f.getAnnoUscita()+",'"+f.getGenere()+"');");
+							f.getCodFilm()+"','"+f.getNome()+"','"+f.getRegista()+"',"+f.getAnnoUscita()+"');");
 			return getFilm(f.getCodFilm());
 		}
 	}
 	
-	public synchronized Film removeFilm(String codice) throws SQLException, FilmSconosciutoException{
-		Film tmp = getFilm(codice);
-		Statement delete = con.createStatement();
-		delete.execute("DELETE FROM "+DBConstants.NAME_TABLE_FILM+" WHERE COD_FILM='"+tmp.getCodFilm()+"';");
-		return tmp;
-	}
 	
 	//METODI PRENOTAZIONE
 	
@@ -323,7 +296,7 @@ public class GestoreCinema {
 		Statement query = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet result = query.executeQuery("SELECT * FROM "+DBConstants.NAME_TABLE_UTENTI);
 		while(result.next()){
-			Utente tmp = new Utente(result.getString("NOME_UTENTE"), result.getString("NOME"), result.getString("COGNOME"), result.getString("EMAIL"), result.getString("PASSWORD"), result.getString("NASCITA"), result.getBoolean("ADMIN"));
+			Utente tmp = new Utente(result.getString("NOME_UTENTE"), result.getString("NOME"), result.getString("COGNOME"), result.getString("EMAIL"), result.getString("PASSWORD"), result.getBoolean("ADMIN"));
 			utenti.add(tmp);
 		}
 		Utente[] tmputenti = new Utente[utenti.size()];
@@ -339,7 +312,7 @@ public class GestoreCinema {
 		ResultSet result = query.executeQuery("SELECT * FROM "+DBConstants.NAME_TABLE_UTENTI+" WHERE NOME_UTENTE='"+nomeUtente+"'");
 		if(!result.first())
 			throw new UtenteSconosciutoException(nomeUtente);
-		Utente u = new Utente(result.getString("NOME_UTENTE"), result.getString("NOME"), result.getString("COGNOME"), result.getString("EMAIL"), result.getString("PASSWORD"), result.getString("NASCITA"), result.getBoolean("ADMIN"));
+		Utente u = new Utente(result.getString("NOME_UTENTE"), result.getString("NOME"), result.getString("COGNOME"), result.getString("EMAIL"), result.getString("PASSWORD"), result.getBoolean("ADMIN"));
 
 		return u;
 	}
@@ -349,7 +322,7 @@ public class GestoreCinema {
 		ResultSet result = query.executeQuery("SELECT * FROM "+DBConstants.NAME_TABLE_UTENTI+" WHERE EMAIL='"+email+"'");
 		if(!result.first())
 			throw new UtenteSconosciutoException(email);
-		Utente u = new Utente(result.getString("NOME_UTENTE"), result.getString("NOME"), result.getString("COGNOME"), result.getString("EMAIL"), result.getString("PASSWORD"), result.getString("NASCITA"), result.getBoolean("ADMIN"));
+		Utente u = new Utente(result.getString("NOME_UTENTE"), result.getString("NOME"), result.getString("COGNOME"), result.getString("EMAIL"), result.getString("PASSWORD"), result.getBoolean("ADMIN"));
 		
 		return u;
 	}
@@ -377,25 +350,15 @@ public class GestoreCinema {
 			}catch (UtenteSconosciutoException ex2){
 			
 			Statement add = con.createStatement();
-			Date data = u.getNascita();
-			String dataok = new SimpleDateFormat("yyyy-MM-dd").format(data);
 			
-			add.execute("INSERT INTO "+DBConstants.NAME_TABLE_UTENTI+" (NOME_UTENTE, NOME, COGNOME, EMAIL, PASSWORD, NASCITA, ADMIN) VALUES ('"+
-							u.getNomeUtente()+"','"+u.getNome()+"','"+u.getCognome()+"','"+u.getEmail()+"','"+u.getPassword()+"','"+dataok+"',"+(u.isAdmin()?"1":"0")+");");
+			add.execute("INSERT INTO "+DBConstants.NAME_TABLE_UTENTI+" (NOME_UTENTE, NOME, COGNOME, EMAIL, PASSWORD, ADMIN) VALUES ('"+
+							u.getNomeUtente()+"','"+u.getNome()+"','"+u.getCognome()+"','"+u.getEmail()+"','"+u.getPassword()+"','"+(u.isAdmin()?"1":"0")+");");
 			addChiave(u);
 			return getUtenteByUsername(u.getNomeUtente());
 			}
 		}
 	}
-	
-	public synchronized Utente removeUtente(String nomeUtente) throws SQLException, UtenteSconosciutoException{
-		Utente tmp = getUtenteByUsername(nomeUtente);
-		removeChiave(tmp.getNomeUtente());
-		Statement delete = con.createStatement();
-		delete.execute("DELETE FROM "+DBConstants.NAME_TABLE_UTENTI+" WHERE NOME_UTENTE='"+tmp.getNomeUtente()+"';");
-		return tmp;
-	}
-	
+
 	// FILTRI
 	
 	public synchronized Prenotazione[] filtraPrenotazioniPerUsername(String username) throws SQLException{
@@ -451,21 +414,6 @@ public class GestoreCinema {
 		return tmpprog;
 	}
 	
-	public synchronized Film[] filtraFilmPerGenere(String genere) throws SQLException{
-		ArrayList<Film> film = new ArrayList<Film>();
-		Statement query = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		ResultSet result = query.executeQuery("SELECT * FROM "+DBConstants.NAME_TABLE_FILM+" WHERE GENERE='"+genere+"'");
-		while(result.next()){
-			Film f = new Film(result.getString("COD_FILM"), result.getString("NOME"), result.getString("REGISTA"), result.getInt("ANNOUSCITA"), result.getString("GENERE"));
-			film.add(f);
-		}
-		Film[] tmpfilm = new Film[film.size()];
-		int i=0;
-		for (Film fi:film){
-			tmpfilm[i++]=fi;
-		}
-		return tmpfilm;
-	}
 	
 	//METODI CHIAVI
 	
