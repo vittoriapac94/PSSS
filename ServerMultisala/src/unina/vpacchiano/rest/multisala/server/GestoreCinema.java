@@ -19,9 +19,10 @@ public class GestoreCinema {
 	
 	public static void main(String [] args) throws SQLException, UtenteSconosciutoException, UtenteDuplicatoException, FilmSconosciutoException, FilmDuplicatoException, SalaSconosciutaException, SalaDuplicataException, ProgrammazioneSconosciutaException, ProgrammazioneDuplicataException, PrenotazioneSconosciutaException, PrenotazioneDuplicataException, PostiTerminatiException, ChiaveSconosciutaException{
 		GestoreCinema gest = new GestoreCinema();
-		//Utente u = new Utente("Luigino", "Luigi", "Martire", "luigimartire@jj.it", "luigino17", "1994-01-24", true);
+		
+		//Utente u = new Utente("Luigino", "Luigi", "Martire", "luigimartire@jj.it", "luigino17", true);
 		//gest.addUtente(u);
-		//gest.addUtente(new Utente("Lallalapalla", "Laura", "Mancini", "lallapallina@alice.it", "lalla44", "1988-08-05", false));
+		//gest.addUtente(new Utente("Lallalapalla", "Laura", "Mancini", "lallapallina@alice.it", "lalla44", false));
 		
 		//Utente utente = gest.getUtenteByChiave("56b211bf00faf47d1c3cb7f28104fc8c");
 		//System.out.println(utente);
@@ -48,6 +49,7 @@ public class GestoreCinema {
 		//Programmazione p = new Programmazione ("PR01", "Vittoria", "AF021", "2015-12-01", "11:00", 1);
 		//gest.addProgrammazione(p);
 		//gest.removeProgrammazione("PR01");
+		
 		
 		//Programmazione[] prog = gest.getAllProgrammazioni();
 		//for (Programmazione pr:prog) System.out.println(pr+"\n");
@@ -294,18 +296,19 @@ public class GestoreCinema {
 	}
 	
 	public synchronized Programmazione addProgrammazione(Programmazione p) throws SQLException, ProgrammazioneSconosciutaException, ProgrammazioneDuplicataException{
-		try{
-			getProgrammazione(p.getCodProgrammazione());
+		//Programmazione duplicata controlla se esiste una programmazione nella stessa sala allo stesso orario
+		Date data = p.getData();
+		String dataS = new SimpleDateFormat("yyyy-MM-dd").format(data);
+		Statement query = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		ResultSet result = query.executeQuery("SELECT * FROM "+DBConstants.NAME_TABLE_PROGRAMMAZIONE+" WHERE NOME_SALA='"+p.getNomeSala()+"' AND DATA='"+dataS+"' AND ORA='"+p.getOrario()+"'");
+		if(!result.first())
 			throw new ProgrammazioneDuplicataException(p.getCodProgrammazione());
-		}
-		catch(ProgrammazioneSconosciutaException ex){
-			Statement add = con.createStatement();
-			Date data = p.getData();
-			String dataok = new SimpleDateFormat("yyyy-MM-dd").format(data);
-			add.execute("INSERT INTO "+DBConstants.NAME_TABLE_PROGRAMMAZIONE+" (COD_PROGRAMMAZIONE, NOME_SALA, COD_FILM, DATA, ORA, POSTI_PRENOTATI) VALUES ('"+
-							p.getCodProgrammazione()+"','"+p.getNomeSala()+"','"+p.getCodFilm()+"','"+dataok+"','"+p.getOrario()+"','"+p.getPostiPrenotati()+"');");
-			return getProgrammazione(p.getCodProgrammazione());
-		}
+	
+		Statement add = con.createStatement();
+		add.execute("INSERT INTO "+DBConstants.NAME_TABLE_PROGRAMMAZIONE+" (COD_PROGRAMMAZIONE, NOME_SALA, COD_FILM, DATA, ORA, POSTI_PRENOTATI) VALUES ('"+
+				p.getCodProgrammazione()+"','"+p.getNomeSala()+"','"+p.getCodFilm()+"','"+dataS+"','"+p.getOrario()+"','"+p.getPostiPrenotati()+"');");
+		return getProgrammazione(p.getCodProgrammazione());
+		
 	}
 	
 	public synchronized Programmazione removeProgrammazione(String codice) throws SQLException, ProgrammazioneSconosciutaException{
@@ -380,8 +383,14 @@ public class GestoreCinema {
 			Date data = u.getNascita();
 			String dataok = new SimpleDateFormat("yyyy-MM-dd").format(data);
 			
+<<<<<<< HEAD:ServerMultisala/src/unina/vpacchiano/rest/multisala/server/GestoreCinema.java
 			add.execute("INSERT INTO "+DBConstants.NAME_TABLE_UTENTI+" (NOME_UTENTE, NOME, COGNOME, EMAIL, PASSWORD, NASCITA, ADMIN) VALUES ('"+
 							u.getNomeUtente()+"','"+u.getNome()+"','"+u.getCognome()+"','"+u.getEmail()+"','"+u.getPassword()+"','"+dataok+"',"+(u.isAdmin()?"1":"0")+");");
+=======
+			add.execute("INSERT INTO "+DBConstants.NAME_TABLE_UTENTI+" (NOME_UTENTE, NOME, COGNOME, EMAIL, PASSWORD, ADMIN) VALUES ('"+
+					u.getNomeUtente()+"','"+u.getNome()+"','"+u.getCognome()+"','"+u.getEmail()+"','"+u.getPassword()+"',"+(u.isAdmin()?"1":"0")+");");
+			
+>>>>>>> vittoria:ServerMultisala/src/unina/vpacchiano/rest/multisala/thesystem/GestoreCinema.java
 			addChiave(u);
 			return getUtenteByUsername(u.getNomeUtente());
 			}
