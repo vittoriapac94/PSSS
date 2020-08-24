@@ -8,8 +8,17 @@ import javax.swing.JSplitPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import org.restlet.resource.ResourceException;
+
+import unina.vpacchiano.rest.multisala.controllers.CinemaController;
+import unina.vpacchiano.rest.multisala.controllers.UtenteSconosciutoException;
+
 import java.awt.Color;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.awt.event.ActionEvent;
 
 public class LoginForm {
 
@@ -19,6 +28,8 @@ public class LoginForm {
 	private JTextField txtUsername_1;
 	private JTextField txtPassword_1;
 
+	CinemaController cc = new CinemaController();
+	
 	/**
 	 * Launch the application.
 	 */
@@ -40,6 +51,7 @@ public class LoginForm {
 	 */
 	public LoginForm() {
 		initialize();
+		frmLogin.setVisible(true);
 	}
 
 	/**
@@ -103,6 +115,21 @@ public class LoginForm {
 		panel_1.add(txtPassword_1);
 		
 		JButton btnAccedi_1 = new JButton("Accedi");
+		btnAccedi_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String chiave = cc.login(txtUsername_1.getText(), txtPassword_1.getText());
+					new MainForm(chiave);
+					frmLogin.dispose();
+					System.out.println(chiave);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (UtenteSconosciutoException e1) {
+
+				}
+			}
+		});
 		btnAccedi_1.setBounds(89, 231, 117, 29);
 		panel_1.add(btnAccedi_1);
 	}
