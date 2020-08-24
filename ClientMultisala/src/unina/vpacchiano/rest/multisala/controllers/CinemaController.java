@@ -31,7 +31,7 @@ public class CinemaController {
 	
 	//METODI LOGIN E REGISTRAZIONE UTENTE
 	
-	public String login(String username, String password) throws UtenteSconosciutoException, IOException {	
+	public String login(String username, String password) throws ResourceException, IOException {	
 		String key;
 		URI = localURL+"/users/login/"+username+"&"+password;
 		cr = new ClientResource(URI);
@@ -39,17 +39,7 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			key = null;
-			switch(status.getCode()){
-			case Constants.ECCEZIONE_UTENTE_INESISTENTE:
-				System.out.println(new UtenteSconosciutoException(username).getMessage());
-				break;
-			case Constants.ECCEZIONE_PASSWORD_ERRATA: 
-				System.err.println("Password errata");
-			 	break;
-			default: 
-				System.err.println("Errore generico");
-				break;
-			}
+			System.exit(status.getCode());
 		} else {
 			key = gson.fromJson(json, String.class);
 			System.out.println(key);

@@ -7,12 +7,15 @@ public class Film {
 	private String nome;
 	private String regista;
 	private int annoUscita;
+	private String genere;
+	private int a;
 	
-	public Film(String codFilm, String nome, String regista, int annoUscita) {
+	public Film(String codFilm, String nome, String regista, int annoUscita, String genere) {
 		this.codFilm = codFilm;
 		this.nome = nome;
 		this.regista = regista;
 		this.annoUscita = annoUscita;
+		this.genere = genere;
 	}
 	
 	public String getCodFilm() {
@@ -30,6 +33,10 @@ public class Film {
 
 	public int getAnnoUscita() {
 		return annoUscita;
+	}
+	
+	public String getGenere() {
+		return genere;
 	}
 	
 	@Override

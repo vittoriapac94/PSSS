@@ -1,6 +1,10 @@
 package unina.vpacchiano.rest.multisala.domain;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class Utente {
 	
@@ -9,14 +13,20 @@ public class Utente {
 	private String cognome;
 	private String email;
 	private String password;
+	private Date nascita;
 	private boolean admin;
 	
-	public Utente(String nomeUtente, String nome, String cognome, String email, String password, boolean admin) {
+	public Utente(String nomeUtente, String nome, String cognome, String email, String password, String nascita, boolean admin) {
 		this.nomeUtente = nomeUtente;
 		this.nome = nome;
 		this.cognome = cognome;
 		this.email = email;
 		this.password = password;
+		try {
+			this.nascita = (new SimpleDateFormat("yy-MM-dd")).parse(nascita);
+		} catch (ParseException e) {
+			this.nascita = new Date();
+		}
 		this.admin = admin;
 	}
 
@@ -38,6 +48,10 @@ public class Utente {
 	
 	public String getEmail() {
 		return email;
+	}
+
+	public Date getNascita() {
+		return nascita;
 	}
 
 	public boolean isAdmin() {
