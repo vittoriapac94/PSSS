@@ -1,4 +1,4 @@
-package unina.vpacchiano.rest.multisala.thesystem;
+package unina.vpacchiano.rest.multisala.server;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import unina.vpacchiano.rest.multisala.domain.*;
+import unina.vpacchiano.rest.multisala.thesystem.*;
 
 
 public class GestoreCinema {

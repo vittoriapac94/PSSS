@@ -9,7 +9,7 @@ import org.restlet.resource.ServerResource;
 import com.google.gson.Gson;
 
 import unina.vpacchiano.rest.multisala.domain.Sala;
-import unina.vpacchiano.rest.multisala.thesystem.GestoreCinema;
+import unina.vpacchiano.rest.multisala.server.GestoreCinema;
 
 
 public class MultisalaSaleAllResourceJSon extends ServerResource {

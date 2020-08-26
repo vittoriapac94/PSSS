@@ -7,12 +7,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.JSplitPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import org.restlet.resource.ResourceException;
 
 import unina.vpacchiano.rest.multisala.controllers.CinemaController;
 import unina.vpacchiano.rest.multisala.controllers.UtenteSconosciutoException;
+import unina.vpacchiano.rest.multisala.domain.Utente;
 
 import java.awt.Color;
 import javax.swing.JButton;
@@ -88,6 +90,28 @@ public class LoginForm {
 		panel.add(txtPassword);
 		
 		JButton btnAccedi = new JButton("Accedi");
+		btnAccedi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//ACCESSO ADMIN
+				try {
+					String chiave = cc.login(txtUsername.getText(), txtPassword.getText());
+					Utente u = cc.getUtente(chiave);
+					if (u.isAdmin()) {
+						new AdminForm(chiave);
+						frmLogin.dispose();
+					}
+					else {
+						JOptionPane.showMessageDialog(null,
+								"Non disponi dei requisiti necessari",
+							    "Accesso negato",
+							    JOptionPane.WARNING_MESSAGE);
+					}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		btnAccedi.setBounds(91, 231, 117, 29);
 		panel.add(btnAccedi);
 		
@@ -121,12 +145,9 @@ public class LoginForm {
 					String chiave = cc.login(txtUsername_1.getText(), txtPassword_1.getText());
 					new MainForm(chiave);
 					frmLogin.dispose();
-					System.out.println(chiave);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				} catch (UtenteSconosciutoException e1) {
-
 				}
 			}
 		});

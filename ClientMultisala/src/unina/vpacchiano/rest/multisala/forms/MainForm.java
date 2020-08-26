@@ -22,6 +22,7 @@ import org.restlet.resource.ResourceException;
 import com.google.gson.Gson;
 
 import unina.vpacchiano.rest.multisala.controllers.CinemaController;
+import unina.vpacchiano.rest.multisala.controllers.UtenteSconosciutoException;
 import unina.vpacchiano.rest.multisala.domain.Film;
 import unina.vpacchiano.rest.multisala.domain.Prenotazione;
 import unina.vpacchiano.rest.multisala.domain.Programmazione;
@@ -35,6 +36,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Color;
+import java.awt.Font;
 
 public class MainForm {
 
@@ -84,7 +86,7 @@ public class MainForm {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		System.out.println("chiave qui: "+chiave);
+		//System.out.println("chiave qui: "+chiave);
 		frmInProgramma = new JFrame();
 		frmInProgramma.setTitle("In programma");
 		frmInProgramma.setBounds(100, 100, 450, 300);
@@ -240,6 +242,21 @@ public class MainForm {
 		actionPanel.add(txtNumeroPosti);
 		txtNumeroPosti.setColumns(10);
 		actionPanel.add(btnPrenota);
+		
+		JButton btnLeMiePrenotazioni = new JButton("Le mie prenotazioni");
+		btnLeMiePrenotazioni.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new PrenotazioniUtenteForm(chiave);
+				frmInProgramma.dispose();
+			}
+		});
+		btnLeMiePrenotazioni.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+		actionPanel.add(btnLeMiePrenotazioni);
+		
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBounds(6, 6, 438, 266);
+		frmInProgramma.getContentPane().add(mainPanel);
+		mainPanel.setLayout(null);
 		
 		if(chiave == null) {
 			actionPanel.setVisible(false);
