@@ -3,6 +3,8 @@ package unina.vpacchiano.rest.multisala.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.restlet.data.Status;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
@@ -31,7 +33,7 @@ public class CinemaController {
 	
 	//METODI LOGIN E REGISTRAZIONE UTENTE
 	
-	public String login(String username, String password) throws ResourceException, IOException {	
+	public String login(String username, String password) throws IOException {	
 		String key;
 		URI = localURL+"/users/login/"+username+"&"+password;
 		cr = new ClientResource(URI);
@@ -39,10 +41,37 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			key = null;
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_UTENTE_INESISTENTE:
+				JOptionPane.showMessageDialog(null,
+						new UtenteSconosciutoException(username).getMessage(),
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_PASSWORD_ERRATA: 
+				System.err.println("Password errata");
+				JOptionPane.showMessageDialog(null,
+						"La password inserita non è corretta",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			key = gson.fromJson(json, String.class);
-			System.out.println(key);
+			JOptionPane.showMessageDialog(null,
+					"Benvenuto, "+username,
+				    "Login",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}
 		return key;
 	}
@@ -53,9 +82,31 @@ public class CinemaController {
 		json = cr.post(gson.toJson(u,Utente.class)).getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_UTENTE_DUPLICATO: 
+				System.err.println("Utente già esistente");
+				JOptionPane.showMessageDialog(null,
+					new UtenteDuplicatoException(u.getNomeUtente()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
-			Utente utente = gson.fromJson(json, Utente.class);		
+			Utente utente = gson.fromJson(json, Utente.class);
+			JOptionPane.showMessageDialog(null,
+					"Ti sei registrato con successo",
+				    "Registrazione avvenuta",
+				    JOptionPane.INFORMATION_MESSAGE);
 			System.out.println("E' stato aggiunto l'utente: " + utente.toString());
 		}	
 	}
@@ -69,7 +120,25 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			utente = null;
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_UTENTE_INESISTENTE: 
+				System.err.println("Utente sconosciuto");
+				JOptionPane.showMessageDialog(null,
+					new UtenteSconosciutoException(chiave).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			utente = gson.fromJson(json, Utente.class);	
 		}
@@ -87,7 +156,18 @@ public class CinemaController {
 		json = cr.get().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Film[] films = gson.fromJson(json, Film[].class);			
 			for(Film f: films) {
@@ -106,7 +186,25 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			film = null;
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_FILM_INESISTENTE: 
+				System.err.println("Film non trovato");
+				JOptionPane.showMessageDialog(null,
+					new FilmSconosciutoException(idFilm).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			film = gson.fromJson(json, Film.class);			
 		}
@@ -119,10 +217,39 @@ public class CinemaController {
 		json = cr.post(gson.toJson(f,Film.class)).getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PERMESSO_NEGATO: 
+				System.err.println("Permesso negato");
+				JOptionPane.showMessageDialog(null,
+					"Non hai i permessi necessari per aggiungere un film",
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_FILM_DUPLICATO: 
+				System.err.println("Film duplicato");
+				JOptionPane.showMessageDialog(null,
+					new FilmDuplicatoException(f.getCodFilm()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Film film = gson.fromJson(json, Film.class);		
-			System.out.println("E' stato aggiunto l'utente: " + film.toString());
+			System.out.println("E' stato aggiunto il film: " + film.toString());
+			JOptionPane.showMessageDialog(null,
+					"Hai aggiunto correttamente il film: " + film.getCodFilm(),
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}	
 	}
 	
@@ -132,10 +259,39 @@ public class CinemaController {
 		json = cr.delete().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PERMESSO_NEGATO: 
+				System.err.println("Permesso negato");
+				JOptionPane.showMessageDialog(null,
+					"Non hai i permessi necessari per aggiungere un film",
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_FILM_INESISTENTE: 
+				System.err.println("Film sconosciuto");
+				JOptionPane.showMessageDialog(null,
+					new FilmSconosciutoException(f.getCodFilm()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Film film = gson.fromJson(json, Film.class);		
 			System.out.println("E' stato cancellato il film: " + film.toString());
+			JOptionPane.showMessageDialog(null,
+					"Hai cancellato correttamente il film: "+film.getCodFilm(),
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
@@ -149,7 +305,18 @@ public class CinemaController {
 		json = cr.get().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Sala[] sale = gson.fromJson(json, Sala[].class);			
 			for(Sala s: sale) {
@@ -168,7 +335,25 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			sala = null;
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_SALA_INESISTENTE: 
+				System.err.println("Sala inesistente");
+				JOptionPane.showMessageDialog(null,
+					new SalaSconosciutaException(idSala).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			sala = gson.fromJson(json, Sala.class);			
 		}
@@ -181,10 +366,39 @@ public class CinemaController {
 		json = cr.post(gson.toJson(s,Sala.class)).getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PERMESSO_NEGATO: 
+				System.err.println("Permesso negato");
+				JOptionPane.showMessageDialog(null,
+					"Non hai i permessi necessari per aggiungere un film",
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_SALA_DUPLICATA: 
+				System.err.println("Sala duplicata");
+				JOptionPane.showMessageDialog(null,
+					new SalaDuplicataException(s.getNome()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Sala sala = gson.fromJson(json, Sala.class);		
 			System.out.println("E' stata aggiunta la sala: " + sala.toString());
+			JOptionPane.showMessageDialog(null,
+					"Hai aggiunto correttamente la sala: "+ sala.getNome(),
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}	
 	}
 	
@@ -194,10 +408,39 @@ public class CinemaController {
 		json = cr.delete().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PERMESSO_NEGATO: 
+				System.err.println("Permesso negato");
+				JOptionPane.showMessageDialog(null,
+					"Non hai i permessi necessari per aggiungere un film",
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_SALA_INESISTENTE: 
+				System.err.println("Sala inesistente");
+				JOptionPane.showMessageDialog(null,
+					new SalaSconosciutaException(s.getNome()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Sala sala = gson.fromJson(json, Sala.class);		
 			System.out.println("E' stata cancellata la sala: " + sala.toString());
+			JOptionPane.showMessageDialog(null,
+					"Hai cancellato con successo la sala: "+ sala.getNome(),
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
@@ -211,7 +454,18 @@ public class CinemaController {
 		json = cr.get().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Programmazione[] programmazioni = gson.fromJson(json, Programmazione[].class);			
 			for(Programmazione p: programmazioni) {
@@ -230,7 +484,25 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			prog = null;
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PROGRAMMAZIONE_INESISTENTE: 
+				System.err.println("Programmazione inesistente");
+				JOptionPane.showMessageDialog(null,
+					new ProgrammazioneSconosciutaException(idProgrammazione).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			prog = gson.fromJson(json, Programmazione.class);			
 		}
@@ -243,10 +515,46 @@ public class CinemaController {
 		json = cr.post(gson.toJson(p,Programmazione.class)).getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PROGRAMMAZIONE_DUPLICATA: 
+				System.err.println("Programmazione già esistente");
+				JOptionPane.showMessageDialog(null,
+					new ProgrammazioneDuplicataException(p.getCodProgrammazione()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_FILM_INESISTENTE: 
+				System.err.println("Film inesistente");
+				JOptionPane.showMessageDialog(null,
+					new FilmSconosciutoException(p.getCodFilm()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_SALA_INESISTENTE: 
+				System.err.println("Sala inesistente");
+				JOptionPane.showMessageDialog(null,
+					new SalaSconosciutaException(p.getNomeSala()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Programmazione prog = gson.fromJson(json, Programmazione.class);		
 			System.out.println("E' stata aggiunta la programmazione: " + prog.toString());
+			JOptionPane.showMessageDialog(null,
+					"Hai aggiunto correttamente la programmazione: "+prog.getCodProgrammazione(),
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}	
 	}
 	
@@ -256,10 +564,32 @@ public class CinemaController {
 		json = cr.delete().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PROGRAMMAZIONE_INESISTENTE: 
+				System.err.println("Programmazione inesistente");
+				JOptionPane.showMessageDialog(null,
+					new ProgrammazioneSconosciutaException(p.getCodProgrammazione()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Programmazione prog = gson.fromJson(json, Programmazione.class);		
 			System.out.println("E' stata cancellata la programmazione: " + prog.toString());
+			JOptionPane.showMessageDialog(null,
+					"Hai rimosso correttamente la programmazione: "+ prog.getCodProgrammazione(),
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
@@ -273,7 +603,25 @@ public class CinemaController {
 		json = cr.get().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PERMESSO_NEGATO: 
+				System.err.println("Permesso negato");
+				JOptionPane.showMessageDialog(null,
+					"Non hai i permessi necessari per aggiungere un film",
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Prenotazione[] prenotazioni = gson.fromJson(json, Prenotazione[].class);			
 			for(Prenotazione p: prenotazioni) {
@@ -292,7 +640,25 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			pren = null;
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PRENOTAZIONE_INESISTENTE: 
+				System.err.println("Sala inesistente");
+				JOptionPane.showMessageDialog(null,
+					new SalaSconosciutaException(idPren).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			pren = gson.fromJson(json, Prenotazione.class);			
 		}
@@ -305,10 +671,46 @@ public class CinemaController {
 		json = cr.post(gson.toJson(p,Prenotazione.class)).getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PRENOTAZIONE_DUPLICATA: 
+				System.err.println("Prenotazione già esistente");
+				JOptionPane.showMessageDialog(null,
+					new PrenotazioneDuplicataException(p.getCodPrenotazione()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_PROGRAMMAZIONE_INESISTENTE: 
+				System.err.println("Programmazione inesistente");
+				JOptionPane.showMessageDialog(null,
+					new ProgrammazioneSconosciutaException(p.getCodProgrammazione()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_POSTI_INSUFFICIENTI: 
+				System.err.println("Posti terminati");
+				JOptionPane.showMessageDialog(null,
+					new PostiTerminatiException().getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Prenotazione pren = gson.fromJson(json, Prenotazione.class);		
 			System.out.println("E' stata aggiunta la prenotazione: " + pren.toString());
+			JOptionPane.showMessageDialog(null,
+					"Prenotazione effettuata con successo",
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}	
 	}
 	
@@ -318,10 +720,32 @@ public class CinemaController {
 		json = cr.delete().getText();
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
-			System.exit(status.getCode());
+			switch(status.getCode()){
+			case Constants.ECCEZIONE_PRENOTAZIONE_INESISTENTE: 
+				System.err.println("Prenotazione inesistente");
+				JOptionPane.showMessageDialog(null,
+					new PrenotazioneSconosciutaException(p.getCodPrenotazione()).getMessage(),
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+				break;
+			case Constants.ECCEZIONE_COLLEGAMENTO_DATABASE: 
+				System.err.println("Errore collegamento database");
+				JOptionPane.showMessageDialog(null,
+						"Connessione con il server persa",
+					    "Warning",
+					    JOptionPane.WARNING_MESSAGE);
+			 	break;
+			default: 
+				System.err.println("Errore generico");
+				break;
+			}
 		} else {
 			Prenotazione pren = gson.fromJson(json, Prenotazione.class);		
 			System.out.println("E' stata cancellata la prenotazione: " + pren.toString());
+			JOptionPane.showMessageDialog(null,
+					"E' stata eliminata la prenotazione",
+				    "Messaggio",
+				    JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 

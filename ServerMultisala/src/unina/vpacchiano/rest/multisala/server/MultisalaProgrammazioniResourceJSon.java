@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import unina.vpacchiano.rest.multisala.domain.Programmazione;
 import unina.vpacchiano.rest.multisala.domain.Utente;
 import unina.vpacchiano.rest.multisala.thesystem.ChiaveSconosciutaException;
-import unina.vpacchiano.rest.multisala.thesystem.GestoreCinema;
+import unina.vpacchiano.rest.multisala.server.GestoreCinema;
 import unina.vpacchiano.rest.multisala.thesystem.ProgrammazioneDuplicataException;
 import unina.vpacchiano.rest.multisala.thesystem.ProgrammazioneSconosciutaException;
 import unina.vpacchiano.rest.multisala.thesystem.UtenteSconosciutoException;

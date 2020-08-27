@@ -5,6 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -21,6 +22,8 @@ import org.restlet.resource.ResourceException;
 import com.google.gson.Gson;
 
 import unina.vpacchiano.rest.multisala.controllers.CinemaController;
+import unina.vpacchiano.rest.multisala.controllers.UtenteSconosciutoException;
+import unina.vpacchiano.rest.multisala.domain.Film;
 import unina.vpacchiano.rest.multisala.domain.Prenotazione;
 import unina.vpacchiano.rest.multisala.domain.Programmazione;
 import unina.vpacchiano.rest.multisala.domain.Utente;
@@ -29,7 +32,11 @@ import javax.swing.JList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.Color;
+import java.awt.Font;
 
 public class MainForm {
 
@@ -39,7 +46,7 @@ public class MainForm {
 	Status status;
 	String URI;
 	String json;
-	static String chiave; 
+	String chiave; 
 	
 	CinemaController cc = new CinemaController();
 	private JTextField txtNumeroPosti;
@@ -51,7 +58,7 @@ public class MainForm {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainForm window = new MainForm(chiave);
+					MainForm window = new MainForm();
 					window.frmInProgramma.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -64,13 +71,22 @@ public class MainForm {
 	 * Create the application.
 	 */
 	public MainForm(String chiave) {
+		this.chiave = chiave;
 		initialize();
+		frmInProgramma.setVisible(true);
 	}
+	
+	public MainForm() {
+		initialize();
+		frmInProgramma.setVisible(true);
+	}
+
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		//System.out.println("chiave qui: "+chiave);
 		frmInProgramma = new JFrame();
 		frmInProgramma.setTitle("In programma");
 		frmInProgramma.setBounds(100, 100, 450, 300);
@@ -100,19 +116,57 @@ public class MainForm {
 		
 		JList<Programmazione> list = new JList<Programmazione>(dlm);
 		JScrollPane scrollPane = new JScrollPane(list);
-		scrollPane.setBounds(0, 0, 306, 220);
+		scrollPane.setBounds(0, 0, 306, 145);
 		programmazioniPanel.add(scrollPane);
+		
+		JPanel programmazioneInfoPanel = new JPanel();
+		programmazioneInfoPanel.setBounds(0, 144, 306, 76);
+		programmazioniPanel.add(programmazioneInfoPanel);
+		programmazioneInfoPanel.setLayout(null);
+		
+		JLabel lblFilm = new JLabel("Film:");
+		lblFilm.setBounds(6, 6, 294, 16);
+		programmazioneInfoPanel.add(lblFilm);
+		
+		JLabel lblSala = new JLabel("Sala:");
+		lblSala.setBounds(6, 26, 294, 16);
+		programmazioneInfoPanel.add(lblSala);
+		
+		JLabel lblDataEOra = new JLabel("Data e ora:");
+		lblDataEOra.setBounds(6, 54, 294, 16);
+		programmazioneInfoPanel.add(lblDataEOra);
 		
 		JPanel userInfoPanel = new JPanel();
 		userInfoPanel.setBounds(6, 6, 438, 34);
 		frmInProgramma.getContentPane().add(userInfoPanel);
 		userInfoPanel.setLayout(null);
 		
-		JLabel lblNonSeiLoggato = new JLabel("Non sei loggato");
+		
+		String textUtente = "Non sei loggato";
+		
+		if(chiave != null) {
+			try {
+				textUtente = "Sei loggato come "+ cc.getUtente(chiave).getNomeUtente();
+			} catch (ResourceException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+		}
+			
+		JLabel lblNonSeiLoggato = new JLabel(textUtente);
 		lblNonSeiLoggato.setBounds(6, 6, 303, 16);
 		userInfoPanel.add(lblNonSeiLoggato);
 		
 		JButton btnVaiAlLogin = new JButton("Vai al login");
+		btnVaiAlLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new LoginForm();
+				frmInProgramma.dispose();
+			}
+		});
 		btnVaiAlLogin.setBounds(315, 1, 117, 29);
 		userInfoPanel.add(btnVaiAlLogin);
 		
@@ -130,6 +184,36 @@ public class MainForm {
             	txtNumeroPosti.setForeground(Color.BLACK);
             }
         });
+		
+		
+		list.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                	Programmazione selected = list.getSelectedValue();
+            		if (selected != null) {
+            			Film f;
+            			try {
+            				f = cc.getFilm(selected.getCodFilm(), null);
+            				lblFilm.setText("Film: "+f.getNome());
+            				lblSala.setText("Sala: "+selected.getNomeSala());
+            				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            				String dataStr = sdf.format(selected.getData());
+            				lblDataEOra.setText("Data e ora: "+dataStr+" - "+selected.getOrario());
+            			} catch (ResourceException e1) {
+            				// TODO Auto-generated catch block
+            				e1.printStackTrace();
+            			} catch (IOException e1) {
+            				// TODO Auto-generated catch block
+            				e1.printStackTrace();
+            			}
+            		}
+                }
+            }
+        });
+		
+		
 		
 		JButton btnPrenota = new JButton("Prenota");
 		btnPrenota.addActionListener(new ActionListener() {
@@ -158,5 +242,24 @@ public class MainForm {
 		actionPanel.add(txtNumeroPosti);
 		txtNumeroPosti.setColumns(10);
 		actionPanel.add(btnPrenota);
+		
+		JButton btnLeMiePrenotazioni = new JButton("Le mie prenotazioni");
+		btnLeMiePrenotazioni.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new PrenotazioniUtenteForm(chiave);
+				frmInProgramma.dispose();
+			}
+		});
+		btnLeMiePrenotazioni.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+		actionPanel.add(btnLeMiePrenotazioni);
+		
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBounds(6, 6, 438, 266);
+		frmInProgramma.getContentPane().add(mainPanel);
+		mainPanel.setLayout(null);
+		
+		if(chiave == null) {
+			actionPanel.setVisible(false);
+		}
 	}
 }
