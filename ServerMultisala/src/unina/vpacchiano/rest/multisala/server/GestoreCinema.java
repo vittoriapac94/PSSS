@@ -20,9 +20,16 @@ public class GestoreCinema {
 	
 	public static void main(String [] args) throws SQLException, UtenteSconosciutoException, UtenteDuplicatoException, FilmSconosciutoException, FilmDuplicatoException, SalaSconosciutaException, SalaDuplicataException, ProgrammazioneSconosciutaException, ProgrammazioneDuplicataException, PrenotazioneSconosciutaException, PrenotazioneDuplicataException, PostiTerminatiException, ChiaveSconosciutaException{
 		GestoreCinema gest = new GestoreCinema();
+<<<<<<< HEAD
 		//Utente u = new Utente("Luigino", "Luigi", "Martire", "luigimartire@jj.it", "luigino17", "1994-01-24", true);
 		//gest.addUtente(u);
 		//gest.addUtente(new Utente("Lallalapalla", "Laura", "Mancini", "lallapallina@alice.it", "lalla44", "1988-08-05", false));
+=======
+		
+		Utente u = new Utente("Luigino", "Luigi", "Martire", "luigimartire@jj.it", "luigino17", true);
+		gest.addUtente(u);
+		gest.addUtente(new Utente("Lallalapalla", "Laura", "Mancini", "lallapallina@alice.it", "lalla44", false));
+>>>>>>> danilo
 		
 		//Utente utente = gest.getUtenteByChiave("56b211bf00faf47d1c3cb7f28104fc8c");
 		//System.out.println(utente);
