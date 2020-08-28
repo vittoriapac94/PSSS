@@ -10,7 +10,7 @@ import org.restlet.resource.ServerResource;
 import com.google.gson.Gson;
 
 import unina.vpacchiano.rest.multisala.domain.Utente;
-import unina.vpacchiano.rest.multisala.thesystem.GestoreCinema;
+import unina.vpacchiano.rest.multisala.server.GestoreCinema;
 import unina.vpacchiano.rest.multisala.thesystem.UtenteDuplicatoException;
 import unina.vpacchiano.rest.multisala.thesystem.UtenteSconosciutoException;
 

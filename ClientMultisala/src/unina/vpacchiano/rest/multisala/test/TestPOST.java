@@ -48,7 +48,7 @@ public class TestPOST {
 		
 		//Funzionante add PRENOTAZIONE
 		Prenotazione pren = new Prenotazione ("PREN2", "Giovannina", "PR02", 21);
-		cc.addPrenotazione(pren, chiaveProva);
+		//cc.addPrenotazione(pren, chiaveProva);
 		
 		
 		

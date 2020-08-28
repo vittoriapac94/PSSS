@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 import unina.vpacchiano.rest.multisala.domain.Programmazione;
 import unina.vpacchiano.rest.multisala.server.Constants;
-import unina.vpacchiano.rest.multisala.thesystem.GestoreCinema;
+import unina.vpacchiano.rest.multisala.server.GestoreCinema;
 
 public class MultisalaProgrammazioniAllResourceJSon extends ServerResource {
 	

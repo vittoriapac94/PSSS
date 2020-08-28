@@ -15,7 +15,7 @@ import unina.vpacchiano.rest.multisala.domain.Utente;
 import unina.vpacchiano.rest.multisala.thesystem.ChiaveSconosciutaException;
 import unina.vpacchiano.rest.multisala.thesystem.FilmDuplicatoException;
 import unina.vpacchiano.rest.multisala.thesystem.FilmSconosciutoException;
-import unina.vpacchiano.rest.multisala.thesystem.GestoreCinema;
+import unina.vpacchiano.rest.multisala.server.GestoreCinema;
 import unina.vpacchiano.rest.multisala.thesystem.UtenteSconosciutoException;
 
 public class MultisalaFilmResourceJSon extends ServerResource {

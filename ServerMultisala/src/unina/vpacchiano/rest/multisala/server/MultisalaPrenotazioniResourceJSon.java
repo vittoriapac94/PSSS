@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import unina.vpacchiano.rest.multisala.domain.Prenotazione;
 import unina.vpacchiano.rest.multisala.domain.Utente;
 import unina.vpacchiano.rest.multisala.thesystem.ChiaveSconosciutaException;
-import unina.vpacchiano.rest.multisala.thesystem.GestoreCinema;
+import unina.vpacchiano.rest.multisala.server.GestoreCinema;
 import unina.vpacchiano.rest.multisala.thesystem.PostiTerminatiException;
 import unina.vpacchiano.rest.multisala.thesystem.PrenotazioneDuplicataException;
 import unina.vpacchiano.rest.multisala.thesystem.PrenotazioneSconosciutaException;
@@ -53,13 +53,7 @@ public class MultisalaPrenotazioniResourceJSon extends ServerResource {
 		try {
 			gest = GestoreCinema.getGestoreCinema();
 			Utente u = gest.getUtenteByChiave((String)this.getAttribute("chiave"));
-			if(u.isAdmin()){
-				return gson.toJson(gest.addPrenotazione(pr),Prenotazione.class);			}
-			else{
-				status = new Status(Constants.ECCEZIONE_PERMESSO_NEGATO,"� negato l'accesso","Accesso negato",null);
-				setStatus(status);
-				return gson.toJson(status, Status.class);
-			}
+			return gson.toJson(gest.addPrenotazione(pr),Prenotazione.class);
 		} catch (SQLException ex) {
 			status = new Status(Constants.ECCEZIONE_COLLEGAMENTO_DATABASE,"DatabaseError","Errore accesso al DataBase",null);
 			setStatus(status);
@@ -113,14 +107,7 @@ public class MultisalaPrenotazioniResourceJSon extends ServerResource {
 			gest = GestoreCinema.getGestoreCinema();
 			String chiavejson= (String)this.getAttribute("chiave");
 			Utente u = gest.getUtenteByChiave(chiavejson);
-			if(u.isAdmin()){
-				return gson.toJson(gest.removePrenotazione(this.getAttribute("nome")), Prenotazione.class);
-			}
-			else{
-				status = new Status(Constants.ECCEZIONE_PERMESSO_NEGATO,"� negato l'accesso","Accesso negato",null);
-				setStatus(status);
-				return gson.toJson(status, Status.class);
-			}
+			return gson.toJson(gest.removePrenotazione(this.getAttribute("nome")), Prenotazione.class);
 		}catch (PrenotazioneSconosciutaException e) {
 			status = new Status(Constants.ECCEZIONE_PRENOTAZIONE_INESISTENTE,"PrenotazioneNotFound","La prenotazione non � stata trovata",null);
 			setStatus(status);
