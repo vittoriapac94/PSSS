@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+<<<<<<< HEAD
+=======
 
 import org.restlet.resource.ResourceException;
 
@@ -16,11 +18,9 @@ import unina.vpacchiano.rest.multisala.controllers.CinemaController;
 import unina.vpacchiano.rest.multisala.controllers.UtenteSconosciutoException;
 import unina.vpacchiano.rest.multisala.domain.Utente;
 
+>>>>>>> vittoria
 import java.awt.Color;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.awt.event.ActionEvent;
 
 public class LoginForm {
 
@@ -30,8 +30,6 @@ public class LoginForm {
 	private JTextField txtUsername_1;
 	private JTextField txtPassword_1;
 
-	CinemaController cc = new CinemaController();
-	
 	/**
 	 * Launch the application.
 	 */
@@ -53,7 +51,6 @@ public class LoginForm {
 	 */
 	public LoginForm() {
 		initialize();
-		frmLogin.setVisible(true);
 	}
 
 	/**
@@ -139,6 +136,8 @@ public class LoginForm {
 		panel_1.add(txtPassword_1);
 		
 		JButton btnAccedi_1 = new JButton("Accedi");
+<<<<<<< HEAD
+=======
 		btnAccedi_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -151,6 +150,7 @@ public class LoginForm {
 				}
 			}
 		});
+>>>>>>> vittoria
 		btnAccedi_1.setBounds(89, 231, 117, 29);
 		panel_1.add(btnAccedi_1);
 	}
