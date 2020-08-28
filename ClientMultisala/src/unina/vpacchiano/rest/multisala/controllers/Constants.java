@@ -17,8 +17,5 @@ public class Constants {
 	public static final int ECCEZIONE_PRENOTAZIONE_INESISTENTE= 799;
 	public static final int ECCEZIONE_PRENOTAZIONE_DUPLICATA= 788;
 	public static final int ECCEZIONE_CHIAVE_INESISTENTE= 765;
-	
-	
-
 
 }
