@@ -33,7 +33,11 @@ public class CinemaController {
 	
 	//METODI LOGIN E REGISTRAZIONE UTENTE
 	
+<<<<<<< HEAD
 	public String login(String username, String password) throws IOException {	
+=======
+	public String login(String username, String password) throws ResourceException, IOException {	
+>>>>>>> giulio
 		String key;
 		URI = localURL+"/users/login/"+username+"&"+password;
 		cr = new ClientResource(URI);
@@ -41,6 +45,7 @@ public class CinemaController {
 		status = cr.getStatus();
 		if (status.getCode() != 200) {
 			key = null;
+<<<<<<< HEAD
 			switch(status.getCode()){
 			case Constants.ECCEZIONE_UTENTE_INESISTENTE:
 				JOptionPane.showMessageDialog(null,
@@ -66,6 +71,9 @@ public class CinemaController {
 				System.err.println("Errore generico");
 				break;
 			}
+=======
+			System.exit(status.getCode());
+>>>>>>> giulio
 		} else {
 			key = gson.fromJson(json, String.class);
 			JOptionPane.showMessageDialog(null,

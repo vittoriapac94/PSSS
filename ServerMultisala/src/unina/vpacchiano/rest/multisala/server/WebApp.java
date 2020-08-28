@@ -27,7 +27,7 @@ public class WebApp extends Application {
 		router.attach("/users/login/{username}&{password}", MultisalaLoginResourceJSon.class);
 		router.attach("/users/{chiave}", MultisalaUtenteResourceJSon.class);
 		
-        //router.attachDefault(MultisalaFilmAllResourceJSon.class);
+        router.attachDefault(MultisalaFilmAllResourceJSon.class);
 
 		
 		return router;
